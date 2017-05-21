@@ -84,7 +84,7 @@ classdef sdm
            if obj.N ~= obj.M 
                error('For write associative, the bit-size initialized for vectors and location-address must be equal.');
            else
-               obj.write(vector, vector)
+               obj = obj.write(vector, vector);
            end
        end 
        
@@ -94,10 +94,10 @@ classdef sdm
                error('The dimension of the vector must be equal to the initlized bit-size for the vectors.');
            elseif size(vector_address, 1) ~= 1 && size(vector_address, 2) ~= obj.N % dimension of the vector address must be equal to the location address
                error('The dimension of the vector-address must be equal to the initilized bit-size of the location-addresses');
-           elseif  sum(sum (abs(vector>1))) > 0 % the vector must be binary matrix 
-               error('Vectors with only binary values are allowed')
-           elseif  sum(sum (abs(vector_address>1))) > 0 % vector address must be binary 
-               error('Vectors addresses with only binary values are allowed')
+           elseif sum(sum (abs(vector>1))) > 0 % the vector must be binary matrix 
+               error('Vectors with only binary values are allowed');
+           elseif sum(sum (abs(vector_address>1))) > 0 % vector address must be binary 
+               error('Vectors addresses with only binary values are allowed');
            else % given that all conditions are satisfies the vector must be comitted to memory 
                for i=1:obj.L
                   location = obj.addressLocations(i,:);
@@ -109,6 +109,45 @@ classdef sdm
                obj.memory(obj.memory>obj.bucketSize) = obj.bucketSize;
                obj.memory(obj.memory<-obj.bucketSize) = -obj.bucketSize;
            end 
-       end    
+       end 
+       
+       %function to impelment associative memory read
+       % where the data and the data address are the same
+       function vector = read_associative(obj, vector, itr)
+           if obj.N ~= obj.M 
+               error('For read associative, the bit-size initialized for vectors and location-address must be equal.');
+           else
+               for i = 1:itr
+                    vector = obj.read(vector);
+               end
+           end
+       end
+       
+       % function to read a vector from the memory 
+       function vector = read(obj, vector_address)
+           if size(vector_address, 1) ~= 1 && size(vector_address, 2) ~= obj.N % dimension of the vector address must be equal to the location address
+               error('The dimension of the vector-address must be equal to the initilized bit-size of the location-addresses');
+           elseif  sum(sum (abs(vector_address>1))) > 0 % vector address must be binary 
+               error('Vectors addresses with only binary values are allowed');
+           else
+               vector = zeros(1, obj.M);
+               for i=1:obj.L
+                   location = obj.addressLocations(i,:);
+                   if pdist2(location, vector_address, 'hamming') <= (obj.hammingRadius/obj.N)
+                       vector = vector + obj.memory(i,:);
+                   end
+               end
+               vector(vector>0) = 1; 
+               vector(vector<0) = -1;
+               vector(vector==0) = (randi([0,1])-0.5)*2;
+               vector(vector==-1) = 0;
+           end
+       end
+       function obj = testing(obj)
+           for i = 1:10
+               vector = randi([0,1], 1, obj.N);
+               obj = obj.write_associative(vector);
+           end
+       end
    end
 end

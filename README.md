@@ -13,4 +13,10 @@
 #### this function is used to write the value 'vector' at location-addresses that is within hammingRadius of provided vector_address
 
 ### write-associative(obj, vector)
-#### this fucntion is used to write 'vector' into at location-addresses that is within hammingRadius of vector. For using this function, the dimension of location addresses and memory-vectors should be equal. 
+#### this function is used to write 'vector' into at location-addresses that is within hammingRadius of vector. For using this function, the dimension of location addresses and memory-vectors should be equal. 
+
+### read(obj, vector_address)
+#### this function is used to read vector form the memory such that the product vector is a combination of vector from address-locations that are within hammingRadius of vector_address
+
+### read_associative(obj, vector_address, itr)
+### this function is used to read from memory when the dimension of location addresses and memory-vectors are equal. Based on the provided vector_address and itr, the return value should converge at hard-address location. 

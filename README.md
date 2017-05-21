@@ -19,4 +19,4 @@
 #### this function is used to read vector form the memory such that the product vector is a combination of vector from address-locations that are within hammingRadius of vector_address
 
 ### read_associative(obj, vector_address, itr)
-### this function is used to read from memory when the dimension of location addresses and memory-vectors are equal. Based on the provided vector_address and itr, the return value should converge at hard-address location. 
+#### this function is used to read from memory when the dimension of location addresses and memory-vectors are equal. Based on the provided vector_address and itr, the return value should converge at hard-address location. 
